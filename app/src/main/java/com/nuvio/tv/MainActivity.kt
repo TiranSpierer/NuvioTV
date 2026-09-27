@@ -351,8 +351,8 @@ open class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         isFirstResumeAfterCreate = true
-        window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
-        window?.setFormat(android.graphics.PixelFormat.TRANSLUCENT)
+        window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.BLACK))
+        window?.setFormat(android.graphics.PixelFormat.OPAQUE)
 
         // Wire the Activity-level launcher to the tracker
         externalPlaybackTracker.activityLauncher = externalPlayerLauncher
@@ -691,14 +691,20 @@ open class MainActivity : ComponentActivity() {
                 ) {
                 val transparentPlayerBackdrop = PlayerWindowBackdrop.isTransparentRequested
                 DisposableEffect(transparentPlayerBackdrop) {
-                    if (transparentPlayerBackdrop) {
-                        val prevBackground = window?.decorView?.background
-                        window?.decorView?.background = null
-                        onDispose {
-                            window?.decorView?.background = prevBackground
+                    window?.let { win ->
+                        if (transparentPlayerBackdrop) {
+                            win.setFormat(android.graphics.PixelFormat.TRANSLUCENT)
+                            win.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+                        } else {
+                            win.setFormat(android.graphics.PixelFormat.OPAQUE)
+                            win.setBackgroundDrawable(ColorDrawable(android.graphics.Color.BLACK))
                         }
-                    } else {
-                        onDispose {}
+                    }
+                    onDispose {
+                        window?.let { win ->
+                            win.setFormat(android.graphics.PixelFormat.OPAQUE)
+                            win.setBackgroundDrawable(ColorDrawable(android.graphics.Color.BLACK))
+                        }
                     }
                 }
                 Surface(

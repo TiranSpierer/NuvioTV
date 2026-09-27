@@ -87,7 +87,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload "v1.1.0-test-dv-fix-v3" app/build/outputs/apk/full/debug/*.apk --clobber || \
-          gh release create "v1.1.0-test-dv-fix-v3" app/build/outputs/apk/full/debug/*.apk \
-            --title "Nuvio Test v3 - Scoped Transparent DecorView Dolby Vision Fix" \
-            --notes "Test build with zero-touch themes.xml: dynamically scoped transparent DecorView during playback with restore on dispose, PlayerView background and shutter transparent, useArtwork disabled, RESIZE_MODE_FIT preserved. Package ID com.nuvio.tv.test, versionCode 1067."
+          gh release upload "v1.1.0-test-dv-fix-v4" app/build/outputs/apk/full/debug/*.apk --clobber || \
+          gh release create "v1.1.0-test-dv-fix-v4" app/build/outputs/apk/full/debug/*.apk \
+            --title "Nuvio Test v4 - MT8696/Google TV Streamer Opaque Black Letterbox Fix" \
+            --notes "Test build with LetterboxRenderPolicy MT8696/Google TV Streamer exclusion (Kodi PR 22561 fix): MediaTek MT8696 renders transparent backdrop with elevated grey floor in Dolby Vision, but opaque black backdrop as true reference black (0 nits / OLED off). Reverted themes.xml, restored opaque black letterbox stack for MT8696. Package ID com.nuvio.tv.test, versionCode 1068."
