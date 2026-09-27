@@ -4,10 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [dev]
+  push:
+    branches: ['test/**', 'fix/**', 'dev']
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: pr-full-debug-build-${{ github.event.pull_request.number || github.ref }}
@@ -48,16 +50,20 @@ jobs:
 
       - name: Prepare CI signing config
         run: |
-          keytool -genkeypair \
-            -v \
-            -keystore "$RUNNER_TEMP/ci-debug.jks" \
-            -storepass android \
-            -alias androiddebugkey \
-            -keypass android \
-            -dname "CN=Android Debug,O=Android,C=US" \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000
+          if [ -f "$GITHUB_WORKSPACE/.github/ci-debug.jks" ]; then
+            cp "$GITHUB_WORKSPACE/.github/ci-debug.jks" "$RUNNER_TEMP/ci-debug.jks"
+          else
+            keytool -genkeypair \
+              -v \
+              -keystore "$RUNNER_TEMP/ci-debug.jks" \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -dname "CN=Android Debug,O=Android,C=US" \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000
+          fi
 
           {
             echo "NUVIO_RELEASE_STORE_FILE=$RUNNER_TEMP/ci-debug.jks"
@@ -70,9 +76,18 @@ jobs:
         run: ./gradlew :app:testFullDebugUnitTest --tests 'com.nuvio.tv.updater.*' :app:assembleFullDebug --stacktrace
 
       - name: Upload fullDebug APK
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
-          path: app/build/outputs/apk/full/debug/app-full-universal-debug.apk
-          archive: false
+          name: app-full-debug-apks
+          path: app/build/outputs/apk/full/debug/*.apk
           if-no-files-found: error
           retention-days: 7
+
+      - name: Create Test GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "v1.1.0-test-dv-fix-v2" app/build/outputs/apk/full/debug/*.apk --clobber || \
+          gh release create "v1.1.0-test-dv-fix-v2" app/build/outputs/apk/full/debug/*.apk \
+            --title "Nuvio Test v2 - Dolby Vision Reference Black Letterbox Fix" \
+            --notes "Test build with full transparent window stack fix: windowBackground transparent, decorView transparent, PlayerView transparent, preserving RESIZE_MODE_FIT (no aspect ratio stretch). Package ID com.nuvio.tv.test, versionCode 1066."

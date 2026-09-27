@@ -1786,6 +1786,8 @@ private fun ExoPlayerSurface(
             descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
             keepScreenOn = false
             resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            setShutterBackgroundColor(android.graphics.Color.TRANSPARENT)
             setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
             enableComposeSurfaceSyncWorkaroundIfAvailable()
             this.player = player
