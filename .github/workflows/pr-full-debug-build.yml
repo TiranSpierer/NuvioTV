@@ -79,12 +79,11 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - name: Create Test GitHub Release
+      - name: Create or Update Test GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "v1.1.0-test-dv-fix" \
-            app/build/outputs/apk/full/debug/app-full-universal-debug.apk \
+          gh release upload "v1.1.0-test-dv-fix" app/build/outputs/apk/full/debug/app-full-universal-debug.apk --clobber || \
+          gh release create "v1.1.0-test-dv-fix" app/build/outputs/apk/full/debug/app-full-universal-debug.apk \
             --title "Nuvio Test - Dolby Vision Gray Bars Fix" \
-            --notes "Test build with RESIZE_MODE_FILL for testing Dolby Vision letterbox rendering without elevated gray bars." \
-            --clobber
+            --notes "Test build with RESIZE_MODE_FILL for testing Dolby Vision letterbox rendering without elevated gray bars."
