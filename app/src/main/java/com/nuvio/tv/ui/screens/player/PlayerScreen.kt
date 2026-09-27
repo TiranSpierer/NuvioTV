@@ -966,7 +966,6 @@ fun PlayerScreen(
                             useLibass = uiState.useLibass,
                             libassRenderType = uiState.libassRenderType,
                             subtitleStyle = uiState.subtitleStyle,
-                            transparentLetterbox = transparentLetterbox,
                             onBindSubtitleView = viewModel::bindExoSubtitleView,
                             modifier = Modifier.fillMaxSize()
                         )
@@ -1772,7 +1771,6 @@ private fun ExoPlayerSurface(
     useLibass: Boolean,
     libassRenderType: LibassRenderType,
     subtitleStyle: SubtitleStyleSettings,
-    transparentLetterbox: Boolean = true,
     onBindSubtitleView: (androidx.media3.ui.SubtitleView?) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -1783,15 +1781,11 @@ private fun ExoPlayerSurface(
     val playerView = remember(context, player) {
         PlayerView(context).apply {
             useController = false
-            useArtwork = false
             isFocusable = false
             isFocusableInTouchMode = false
             descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
             keepScreenOn = false
             resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-            val bg = if (transparentLetterbox) android.graphics.Color.TRANSPARENT else android.graphics.Color.BLACK
-            setBackgroundColor(bg)
-            setShutterBackgroundColor(bg)
             setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
             enableComposeSurfaceSyncWorkaroundIfAvailable()
             this.player = player
@@ -1802,9 +1796,6 @@ private fun ExoPlayerSurface(
         factory = { playerView },
         modifier = modifier.focusProperties { canFocus = false },
         update = {
-            val bg = if (transparentLetterbox) android.graphics.Color.TRANSPARENT else android.graphics.Color.BLACK
-            it.setBackgroundColor(bg)
-            it.setShutterBackgroundColor(bg)
             it.syncLibassOverlay(
                 player = player,
                 enabled = useLibass,

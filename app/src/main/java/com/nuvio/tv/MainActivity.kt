@@ -54,7 +54,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
@@ -351,8 +350,7 @@ open class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         isFirstResumeAfterCreate = true
-        window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.BLACK))
-        window?.setFormat(android.graphics.PixelFormat.OPAQUE)
+        window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
 
         // Wire the Activity-level launcher to the tracker
         externalPlaybackTracker.activityLauncher = externalPlayerLauncher
@@ -690,23 +688,6 @@ open class MainActivity : ComponentActivity() {
                     LocalStartupSplashEnabled provides startupSplashEnabled
                 ) {
                 val transparentPlayerBackdrop = PlayerWindowBackdrop.isTransparentRequested
-                DisposableEffect(transparentPlayerBackdrop) {
-                    window?.let { win ->
-                        if (transparentPlayerBackdrop) {
-                            win.setFormat(android.graphics.PixelFormat.TRANSLUCENT)
-                            win.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
-                        } else {
-                            win.setFormat(android.graphics.PixelFormat.OPAQUE)
-                            win.setBackgroundDrawable(ColorDrawable(android.graphics.Color.BLACK))
-                        }
-                    }
-                    onDispose {
-                        window?.let { win ->
-                            win.setFormat(android.graphics.PixelFormat.OPAQUE)
-                            win.setBackgroundDrawable(ColorDrawable(android.graphics.Color.BLACK))
-                        }
-                    }
-                }
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     shape = RectangleShape,
