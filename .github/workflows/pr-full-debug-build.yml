@@ -4,10 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [dev]
+  push:
+    branches: ['fix/**', 'dev']
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: pr-full-debug-build-${{ github.event.pull_request.number || github.ref }}
@@ -70,9 +72,19 @@ jobs:
         run: ./gradlew :app:testFullDebugUnitTest --tests 'com.nuvio.tv.updater.*' :app:assembleFullDebug --stacktrace
 
       - name: Upload fullDebug APK
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
+          name: app-full-universal-debug
           path: app/build/outputs/apk/full/debug/app-full-universal-debug.apk
-          archive: false
           if-no-files-found: error
           retention-days: 7
+
+      - name: Create Test GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v1.1.0-test-dv-fix" \
+            app/build/outputs/apk/full/debug/app-full-universal-debug.apk \
+            --title "Nuvio Test - Dolby Vision Gray Bars Fix" \
+            --notes "Test build with RESIZE_MODE_FILL for testing Dolby Vision letterbox rendering without elevated gray bars." \
+            --clobber

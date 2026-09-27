@@ -1785,7 +1785,7 @@ private fun ExoPlayerSurface(
             isFocusableInTouchMode = false
             descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
             keepScreenOn = false
-            resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
             setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
             enableComposeSurfaceSyncWorkaroundIfAvailable()
             this.player = player
