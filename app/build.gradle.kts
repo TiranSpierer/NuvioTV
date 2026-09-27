@@ -105,8 +105,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1065
-        versionName = "1.1.0-beta.2"
+        versionCode = 1070
+        versionName = "1.1.0-test-v6-pr3736"
 
         buildConfigField("String", "PARENTAL_GUIDE_API_URL", "\"${localProperties.getProperty("PARENTAL_GUIDE_API_URL", "")}\"")
         buildConfigField("String", "INTRODB_API_URL", "\"${localProperties.getProperty("INTRODB_API_URL", "")}\"")
@@ -193,6 +193,7 @@ android {
 
     buildTypes {
         debug {
+            applicationIdSuffix = ".test"
             signingConfig = signingConfigs.getByName("release")
             isDebuggable = false
             isMinifyEnabled = false
@@ -275,8 +276,8 @@ android {
         abi {
             isEnable = !buildingAppBundle
             reset()
-            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-            isUniversalApk = true
+            include("armeabi-v7a")
+            isUniversalApk = false
         }
     }
 
