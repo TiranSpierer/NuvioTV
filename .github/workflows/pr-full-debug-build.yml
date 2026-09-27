@@ -74,8 +74,8 @@ jobs:
       - name: Upload fullDebug APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-full-universal-debug
-          path: app/build/outputs/apk/full/debug/app-full-universal-debug.apk
+          name: app-full-debug-apks
+          path: app/build/outputs/apk/full/debug/*.apk
           if-no-files-found: error
           retention-days: 7
 
@@ -83,7 +83,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload "v1.1.0-test-dv-fix" app/build/outputs/apk/full/debug/app-full-universal-debug.apk --clobber || \
-          gh release create "v1.1.0-test-dv-fix" app/build/outputs/apk/full/debug/app-full-universal-debug.apk \
+          gh release upload "v1.1.0-test-dv-fix" app/build/outputs/apk/full/debug/*.apk --clobber || \
+          gh release create "v1.1.0-test-dv-fix" app/build/outputs/apk/full/debug/*.apk \
             --title "Nuvio Test - Dolby Vision Gray Bars Fix" \
             --notes "Test build with RESIZE_MODE_FILL for testing Dolby Vision letterbox rendering without elevated gray bars."
