@@ -1781,6 +1781,7 @@ private fun ExoPlayerSurface(
     val playerView = remember(context, player) {
         PlayerView(context).apply {
             useController = false
+            useArtwork = false
             isFocusable = false
             isFocusableInTouchMode = false
             descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS

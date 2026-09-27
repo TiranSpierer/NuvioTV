@@ -351,8 +351,7 @@ open class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         isFirstResumeAfterCreate = true
         window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
-        window?.decorView?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-        window?.decorView?.background = null
+        window?.setFormat(android.graphics.PixelFormat.TRANSLUCENT)
 
         // Wire the Activity-level launcher to the tracker
         externalPlaybackTracker.activityLauncher = externalPlayerLauncher
@@ -690,10 +689,15 @@ open class MainActivity : ComponentActivity() {
                     LocalStartupSplashEnabled provides startupSplashEnabled
                 ) {
                 val transparentPlayerBackdrop = PlayerWindowBackdrop.isTransparentRequested
-                LaunchedEffect(transparentPlayerBackdrop) {
+                DisposableEffect(transparentPlayerBackdrop) {
                     if (transparentPlayerBackdrop) {
-                        window?.decorView?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                        val prevBackground = window?.decorView?.background
                         window?.decorView?.background = null
+                        onDispose {
+                            window?.decorView?.background = prevBackground
+                        }
+                    } else {
+                        onDispose {}
                     }
                 }
                 Surface(

@@ -87,7 +87,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload "v1.1.0-test-dv-fix-v2" app/build/outputs/apk/full/debug/*.apk --clobber || \
-          gh release create "v1.1.0-test-dv-fix-v2" app/build/outputs/apk/full/debug/*.apk \
-            --title "Nuvio Test v2 - Dolby Vision Reference Black Letterbox Fix" \
-            --notes "Test build with full transparent window stack fix: windowBackground transparent, decorView transparent, PlayerView transparent, preserving RESIZE_MODE_FIT (no aspect ratio stretch). Package ID com.nuvio.tv.test, versionCode 1066."
+          gh release upload "v1.1.0-test-dv-fix-v3" app/build/outputs/apk/full/debug/*.apk --clobber || \
+          gh release create "v1.1.0-test-dv-fix-v3" app/build/outputs/apk/full/debug/*.apk \
+            --title "Nuvio Test v3 - Scoped Transparent DecorView Dolby Vision Fix" \
+            --notes "Test build with zero-touch themes.xml: dynamically scoped transparent DecorView during playback with restore on dispose, PlayerView background and shutter transparent, useArtwork disabled, RESIZE_MODE_FIT preserved. Package ID com.nuvio.tv.test, versionCode 1067."
